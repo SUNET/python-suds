@@ -37,9 +37,6 @@ from logging import getLogger
 
 log = getLogger(__name__)
 
-PROCESSED_IMPORTS = []
-PROCESSED_IMPORT_DEPTH = []
-MAX_IMPORT_DEPTH = 3
 
 class SchemaCollection:
     """
@@ -397,21 +394,6 @@ class Schema:
         @rtype: L{Schema}
         @note: This is only used by Import children.
         """
-
-        global PROCESSED_IMPORTS, PROCESSED_IMPORT_DEPTH, MAX_IMPORT_DEPTH
-        if baseurl in PROCESSED_IMPORTS:
-            ind = PROCESSED_IMPORTS.index(baseurl)
-            if (PROCESSED_IMPORT_DEPTH[ind] < MAX_IMPORT_DEPTH):
-                PROCESSED_IMPORT_DEPTH[ind]+=1
-                log.debug('Increasing import count for: {0}'.format(baseurl))
-            else:
-                log.debug('Skipping processed import: {0}'.format(baseurl))
-                return None
-        else:
-            PROCESSED_IMPORTS.append(baseurl)
-            log.debug('Appending new import: {0}'.format(baseurl))
-            PROCESSED_IMPORT_DEPTH.append(1)
-
         return Schema(root, baseurl, options)
 
     def str(self, indent=0):
