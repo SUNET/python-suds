@@ -20,6 +20,12 @@ import sys
 import suds
 from setuptools import setup, find_packages
 
+testing_extras = [
+    'nose==1.2.1',
+    'nosexcover==1.0.8',
+    'coverage==3.6',
+]
+
 setup(
     name="suds",
     version=suds.__version__,
@@ -30,4 +36,7 @@ setup(
     maintainer_email="jortel@redhat.com",
     packages=find_packages(exclude=['tests']),
     url="https://fedorahosted.org/suds",
+    extras_require={
+        'testing': testing_extras,
+    },
 )
