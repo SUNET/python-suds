@@ -37,10 +37,6 @@ from logging import getLogger
 
 log = getLogger(__name__)
 
-PROCESSED_IMPORTS_CACHE = {}
-PROCESSED_IMPORT_DEPTH = {}
-MAX_IMPORT_DEPTH = 3
-
 class SchemaCollection:
     """
     A collection of schema objects.  This class is needed because WSDLs 
@@ -192,7 +188,11 @@ class Schema:
     """
     
     Tag = 'schema'
-    
+
+    PROCESSED_IMPORTS_CACHE = {}
+    PROCESSED_IMPORT_DEPTH = {}
+    MAX_IMPORT_DEPTH = 3
+
     def __init__(self, root, baseurl, options, container=None):
         """
         @param root: The xml root.
@@ -398,25 +398,25 @@ class Schema:
         @note: This is only used by Import children.
         """
 
-        global PROCESSED_IMPORTS_CACHE, PROCESSED_IMPORT_DEPTH, MAX_IMPORT_DEPTH
-        if not baseurl in PROCESSED_IMPORTS_CACHE:
-            if baseurl in PROCESSED_IMPORT_DEPTH:
-                if (PROCESSED_IMPORT_DEPTH[baseurl] < MAX_IMPORT_DEPTH):
-                    PROCESSED_IMPORT_DEPTH[baseurl]+=1
+        if not baseurl in self.PROCESSED_IMPORTS_CACHE:
+            if baseurl in self.PROCESSED_IMPORT_DEPTH:
+                if self.PROCESSED_IMPORT_DEPTH[baseurl] < self.MAX_IMPORT_DEPTH:
+                    self.PROCESSED_IMPORT_DEPTH[baseurl]+=1
                     log.debug('Increasing import count for: %s' % baseurl)
                 else:
-                    log.debug('Maxdepth (%d) reached; Skipping processed import: %s' % (MAX_IMPORT_DEPTH, baseurl))
+                    log.debug('+++ Schema (%s) imports: %s' % (baseurl, self.imports))
+                    log.debug('Maxdepth (%d) reached; Skipping processed import: %s' % (self.MAX_IMPORT_DEPTH, baseurl))
                     return None
             else:
-                PROCESSED_IMPORT_DEPTH[baseurl] = 1
+                self.PROCESSED_IMPORT_DEPTH[baseurl] = 1
                 log.debug('Importing for the first time: %s' % baseurl)
 
-            PROCESSED_IMPORTS_CACHE[baseurl] = Schema(root, baseurl, options)
+            self.PROCESSED_IMPORTS_CACHE[baseurl] = Schema(root, baseurl, options)
             log.debug('Successfully cached import: %s' % baseurl)
         else:
             log.debug('Retrieving import from cache: %s' % baseurl)
 
-        return PROCESSED_IMPORTS_CACHE[baseurl]
+        return self.PROCESSED_IMPORTS_CACHE[baseurl]
 
     def str(self, indent=0):
         tab = '%*s'%(indent*3, '')

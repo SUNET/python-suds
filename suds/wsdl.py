@@ -161,7 +161,11 @@ class Definitions(WObject):
         for s in self.services:
             self.add_methods(s)
         log.debug("wsdl at '%s' loaded:\n%s", url, self)
-        
+
+        # Reset schema recursion
+        Schema.PROCESSED_IMPORT_DEPTH = {}
+        Schema.PROCESSED_IMPORTS_CACHE = {}
+
     def mktns(self, root):
         """ Get/create the target namespace """
         tns = root.get('targetNamespace')
