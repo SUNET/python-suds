@@ -1,0 +1,4 @@
+python_module: suds
+python_source_directory: suds
+publish_over_ssh: pypi.sunet.se
+clean_workspace: true
