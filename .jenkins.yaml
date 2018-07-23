@@ -1,4 +1,6 @@
-python_module: suds
-python_source_directory: suds
+git:
+  branch: ssl-enabled
+python_module: recaptcha
+python_source_directory: recaptcha
 publish_over_ssh: pypi.sunet.se
 clean_workspace: true
